@@ -21,7 +21,7 @@ class Data(BaseCog):
     async def data(
         self, ctx: discord.ApplicationContext
     ) -> discord.Interaction | discord.WebhookMessage | None:
-        guild_path = Path(f"data/{member.guild.id}.json")
+        guild_path = Path(f"data/{ctx.guild_id}.json")
 
         if not guild_path.exists():
             guild_path.touch()
