@@ -30,9 +30,7 @@ class VoiceEvent(BaseCog):
 
         async with aiofiles.open(guild_path, "r") as f:
             content: str = await f.read()
-            self.data: Any | dict[Any, Any] = (
-                msgspec.json.decode(content) if content else {}
-            )
+            self.data: Any | dict[Any, Any] = msgspec.json.decode(content) if content else {}
 
         dvc_channel: Any | None = self.data.get("dvc-channel", None)
         notify_channel_id: Any | None = self.data.get("dvc-notify-channel", None)
@@ -52,13 +50,9 @@ class VoiceEvent(BaseCog):
 
             if dvc_channel is not None and after.channel.id == int(dvc_channel):
                 overwrites: dict[Any, discord.PermissionOverwrite] = {
-                    after.channel.guild.default_role: discord.PermissionOverwrite(
-                        connect=False
-                    ),
+                    after.channel.guild.default_role: discord.PermissionOverwrite(connect=False),
                     member: discord.PermissionOverwrite(administrator=True),
-                    after.channel.guild.me: discord.PermissionOverwrite(
-                        administrator=True
-                    ),
+                    after.channel.guild.me: discord.PermissionOverwrite(administrator=True),
                 }
                 self.channel = await member.guild.create_voice_channel(
                     name=f"🌠 | {member.name} 的頻道",

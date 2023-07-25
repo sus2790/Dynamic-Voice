@@ -51,9 +51,7 @@ class NotifyView(discord.ui.View):
 
         async with aiofiles.open(guild_path, "r") as f:
             content: str = await f.read()
-            self.feature: Any | dict[Any, Any] = (
-                msgspec.json.decode(content) if content else {}
-            )
+            self.feature: Any | dict[Any, Any] = msgspec.json.decode(content) if content else {}
             self.feature["dvc-notify-channel"] = int(
                 ", ".join(f"{channel.id}" for channel in select.values)
             )
@@ -111,9 +109,7 @@ class VoiceView(discord.ui.View):
 
         async with aiofiles.open(guild_path, "r") as f:
             content: str = await f.read()
-            self.feature: Any | dict[Any, Any] = (
-                msgspec.json.decode(content) if content else {}
-            )
+            self.feature: Any | dict[Any, Any] = msgspec.json.decode(content) if content else {}
             self.feature["dvc-channel"] = int(
                 ", ".join(f"{channel.id}" for channel in select.values)
             )

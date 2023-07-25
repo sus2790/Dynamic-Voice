@@ -21,9 +21,7 @@ class Errors(BaseCog):
     ) -> None:
         caught: bool = True
         error_type: str = error.__class__.__name__
-        error_message: str = "".join(
-            format_exception(type(error), error, error.__traceback__)
-        )
+        error_message: str = "".join(format_exception(type(error), error, error.__traceback__))
 
         if caught:
             self.logger.exception(error_message)
@@ -47,9 +45,7 @@ class Errors(BaseCog):
             color=discord.Color.red(),
             timestamp=utcnow(),
         )
-        user_embed.set_author(
-            name=self.bot.user.name, icon_url=self.bot.user.avatar.url
-        )
+        user_embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar.url)
         user_embed.set_footer(icon_url=ctx.author.avatar.url, text=f"{ctx.author} 測試")
 
         async with aiohttp.ClientSession() as session:
