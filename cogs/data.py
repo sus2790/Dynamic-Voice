@@ -28,9 +28,7 @@ class Data(BaseCog):
 
         async with aiofiles.open(guild_path, "r") as f:
             content: str = await f.read()
-            self.data: Any | dict[Any, Any] = (
-                msgspec.json.decode(content) if content else {}
-            )
+            self.data: Any | dict[Any, Any] = msgspec.json.decode(content) if content else {}
 
         if len(self.data) == 0:
             embed = discord.Embed(
@@ -54,11 +52,7 @@ class Data(BaseCog):
         }
         for key, value in self.data.items():
             title = channel_description.get(key, "未知")
-            value = (
-                f"```{value}```"
-                if title.startswith("未知")
-                else f"```{value}```(<#{value}>)"
-            )
+            value = f"```{value}```" if title.startswith("未知") else f"```{value}```(<#{value}>)"
             embed.add_field(name=title, value=value, inline=True)
         await ctx.respond(embed=embed)
 
