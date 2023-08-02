@@ -119,7 +119,7 @@ class VoiceView(discord.ui.View):
 
         embed = discord.Embed(
             title=f'{Emojis.SUCCESSFUL} 設定成功！',
-            description=f"已將動態語音頻道設置為：{', '.join([channel.mention for channel in select.values])}",
+            description=f"已將動態語音頻道設置為：{self.feature["dvc-notify-channel"]}",
             color=discord.Color.green(),
             timestamp=utcnow(),
         )
