@@ -21,20 +21,18 @@ class Errors(BaseCog):
     ) -> None:
         caught: bool = True
         error_type: str = error.__class__.__name__
-        error_message: str = "".join(
-            format_exception(type(error), error, error.__traceback__)
-        )
+        error_message: str = ''.join(format_exception(type(error), error, error.__traceback__))
 
         if caught:
             self.logger.exception(error_message)
 
         error_embed = discord.Embed(
-            title=f"{Emojis.CROSS} 又有一個奇怪的錯誤了",
+            title=f'{Emojis.CROSS} 又有一個奇怪的錯誤了',
             color=discord.Color.red(),
             timestamp=utcnow(),
         )
-        error_embed.add_field(name="錯誤類型", value=f"```py\n{error_type}\n```")
-        error_embed.add_field(name="錯誤訊息", value=f"```py\n{error}\n```")
+        error_embed.add_field(name='錯誤類型', value=f'```py\n{error_type}\n```')
+        error_embed.add_field(name='錯誤訊息', value=f'```py\n{error}\n```')
         error_embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
         error_embed.set_footer(
             icon_url=ctx.guild.icon.url if ctx.guild.icon else ctx.author.avatar.url,
@@ -42,20 +40,18 @@ class Errors(BaseCog):
         )
 
         user_embed = discord.Embed(
-            title=f"{Emojis.CROSS} 看來你遇到了一個錯誤",
-            description=f"機器人處理指令時發生錯誤，請稍後再試 {Emojis.SAD}",
+            title=f'{Emojis.CROSS} 看來你遇到了一個錯誤',
+            description=f'機器人處理指令時發生錯誤，請稍後再試 {Emojis.SAD}',
             color=discord.Color.red(),
             timestamp=utcnow(),
         )
-        user_embed.set_author(
-            name=self.bot.user.name, icon_url=self.bot.user.avatar.url
-        )
-        user_embed.set_footer(icon_url=ctx.author.avatar.url, text=f"{ctx.author} 測試")
+        user_embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar.url)
+        user_embed.set_footer(icon_url=ctx.author.avatar.url, text=f'{ctx.author} 測試')
 
         async with aiohttp.ClientSession() as session:
-            webhook: Webhook = Webhook.from_url(os.environ["webhook"], session=session)
+            webhook: Webhook = Webhook.from_url(os.environ['WEBHOOK_URL'], session=session)
             await webhook.send(
-                f"<@!823122263552425984>\n```py\n{error_message[:1000]}\n```",
+                f'<@!823122263552425984>\n```py\n{error_message[:1000]}\n```',
                 embed=error_embed,
             )
 

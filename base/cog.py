@@ -12,4 +12,4 @@ class BaseCog(commands.Cog):
 
     @property
     def logger(self) -> logging.Logger:
-        return logging.getLogger("DynamicVoice")
+        return logging.getLogger('DynamicVoice')
