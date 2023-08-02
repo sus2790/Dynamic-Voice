@@ -32,12 +32,12 @@ repos:
     rev: 0.2.7
     hooks:
       - id: brunette
-        args: [--safe, --quiet, --single-quotes --line-length=100]
+        args: [--safe, --quiet, --single-quotes, --line-length=100]
   - repo: https://github.com/astral-sh/ruff-pre-commit # replace `isort` and `flake8`
     rev: v0.0.282
     hooks:
       - id: ruff
-        args: [--fix, --line-length=100 --exit-non-zero-on-fix]
+        args: [--fix, --line-length=100, --exit-non-zero-on-fix]
 ci:
   autofix_prs: true
   autofix_commit_msg: "ci: correct from checks."
