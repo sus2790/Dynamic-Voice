@@ -49,7 +49,7 @@ class Errors(BaseCog):
         user_embed.set_footer(icon_url=ctx.author.avatar.url, text=f"{ctx.author} 測試")
 
         async with aiohttp.ClientSession() as session:
-            webhook: Webhook = Webhook.from_url(os.environ["webhook"], session=session)
+            webhook: Webhook = Webhook.from_url(os.environ["WEBHOOK_URL"], session=session)
             await webhook.send(
                 f"<@!823122263552425984>\n```py\n{error_message[:1000]}\n```",
                 embed=error_embed,
