@@ -28,35 +28,16 @@ repos:
         name: TOML Structure
       - id: check-merge-conflict
         name: Merge Conflicts
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
+  - repo: https://github.com/odwyersoftware/brunette
+    rev: 0.2.7
     hooks:
-      - id: black
-        name: Black Formatting
-        language: python
-        types: [file, python]
-        args: [--line-length=100]
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+      - id: brunette
+        args: [--safe, --quiet, --single-quotes, --line-length=100]
+  - repo: https://github.com/astral-sh/ruff-pre-commit # replace `isort` and `flake8`
+    rev: v0.0.282
     hooks:
-      - id: flake8
-        name: flake8 Formatting
-        language: python
-        types: [file, python]
-        args:
-          [
-            --max-line-length=100,
-            --ignore=E203 E301 E302 E501 E402 E704 W503 W504,
-          ]
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        name: isort Formatting
-        language: python
-        types: [file, python]
-        args: ["--profile", "black"]
-
+      - id: ruff
+        args: [--fix, --line-length=100, --exit-non-zero-on-fix]
 ci:
   autofix_prs: true
   autofix_commit_msg: "ci: correct from checks."

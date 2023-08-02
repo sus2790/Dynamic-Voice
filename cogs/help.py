@@ -16,11 +16,11 @@ class Help(BaseCog):
     def get_pages(self) -> list[Any]:
         return self.pages
 
-    @add_to_group("dvc")
-    @commands.slash_command(description="顯示所有指令的使用方法")
+    @add_to_group('dvc')
+    @commands.slash_command(description='顯示所有指令的使用方法')
     async def help(self, ctx: discord.ApplicationContext) -> None:
         embed = discord.Embed(
-            title=f"所有 {self.bot.user.name} 指令",
+            title=f'所有 {self.bot.user.name} 指令',
             color=discord.Color.from_rgb(72, 60, 76),
             timestamp=utcnow(),
         )
@@ -30,8 +30,8 @@ class Help(BaseCog):
         for command in self.bot.walk_application_commands():
             if not isinstance(command, discord.SlashCommandGroup):
                 embed.add_field(
-                    name=f"</{command.qualified_name}:{command.qualified_id}>",
-                    value=f"- {command.description}" or "這個指令還沒有介紹，你要幫我想一個嗎",
+                    name=f'</{command.qualified_name}:{command.qualified_id}>',
+                    value=f'- {command.description}' or '這個指令還沒有介紹，你要幫我想一個嗎',
                     inline=True,
                 )
 
