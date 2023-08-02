@@ -17,15 +17,14 @@ class DynamicVoice(discord.AutoShardedBot):
 
         super().__init__(
             activity=discord.Game("Dynamic Voice - 動態語音"),
-            allowed_mentions=discord.AllowedMentions.none(),
+            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False),
             chunk_guilds_at_startup=False,
-            help_command=None,
             intents=discord.Intents.default(),
-            owner_ids=[os.getenv("owners")],
+            member_cache_flags=discord.MemberCacheFlags.none(),
         )
 
         self.logger: logging.Logger = logging.getLogger("DynamicVoice")
-        self.version: str = os.getenv("version") or "未知"
+        self.version: str = os.getenv("VERSION") or "未知"
 
         for k, v in self.load_extension("cogs", recursive=True, store=True).items():
             if v is True:
@@ -58,4 +57,4 @@ class DynamicVoice(discord.AutoShardedBot):
         self.logger.info(f"[Shard {shard_id}] 已恢復連線")
 
     def run(self) -> None:
-        super().run(os.environ["token"])
+        super().run(os.environ["TOKEN"])
