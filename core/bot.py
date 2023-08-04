@@ -26,14 +26,15 @@ class DynamicVoice(discord.AutoShardedBot):
         self.logger: logging.Logger = logging.getLogger('DynamicVoice')
         self.version: str = os.getenv('VERSION') or '未知'
 
-        for k, v in self.load_extension('cogs', recursive=True, store=True).items():  # type: ignore
+        for k, v in self.load_extension('cogs', recursive=True, store=True).items():
             if v is True:
                 self.logger.debug(f'[Cog] {k} 載入成功')
             else:
-                message: str = ''.join(format_exception(type(v), v, v.__traceback__))  # type: ignore
-                self.logger.error(f'[Cog] {k} 發生錯誤\n{message}')
+                self.logger.error(
+                    f"[Cog] {k} 發生錯誤\n{''.join(format_exception(type(v), v, v.__traceback__))}"
+                )
 
-        apply_multicog(self._bot)  # type: ignore
+        apply_multicog(self._bot)
 
     async def on_ready(self) -> None:
         print(
