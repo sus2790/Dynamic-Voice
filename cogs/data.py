@@ -4,11 +4,10 @@ from typing import Any
 import aiofiles
 import discord
 import msgspec
-from discord.ext import commands
-from pycord.multicog import add_to_group
-
 from base.cog import BaseCog
 from core.emojis import Emojis
+from discord.ext import commands
+from pycord.multicog import add_to_group
 
 
 class Data(BaseCog):
@@ -16,9 +15,9 @@ class Data(BaseCog):
         self.bot: discord.AutoShardedBot = bot
 
     @add_to_group('dvc')
-    @commands.slash_command(description='設定該伺服器的動態語音資料')
+    @commands.slash_command(name='data', description='設定該伺服器的動態語音資料')
     @discord.default_permissions(administrator=True)
-    async def data(
+    async def data_callback(
         self, ctx: discord.ApplicationContext
     ) -> discord.Interaction | discord.WebhookMessage | None:
         guild_path = Path(f'data/{ctx.guild_id}.json')
@@ -46,13 +45,16 @@ class Data(BaseCog):
         )
         embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar.url)
         embed.set_footer(icon_url=ctx.author.avatar.url, text=ctx.author)
-        channel_description: dict[str, str] = {
-            'dvc-notify-channel': '動態語音通知頻道',
-            'dvc-channel': '動態語音頻道',
-        }
         for key, value in self.data.items():
-            title = channel_description.get(key, '未知')
-            value = f'```{value}```' if title.startswith('未知') else f'```{value}```(<#{value}>)'
+            channel_info: dict[str, str] = {
+                'dvc-notify-channel': '動態語音通知頻道',
+                'dvc-channel': '動態語音頻道',
+            }
+            title: str = channel_info.get(key, '未知')
+            if title.startswith('未知'):
+                value: str = f'```{value}```'
+            else:
+                value = f'```{value}```(<#{value}>)'
             embed.add_field(name=title, value=value, inline=True)
         await ctx.respond(embed=embed)
 

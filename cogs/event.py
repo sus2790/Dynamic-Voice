@@ -4,17 +4,16 @@ from typing import Any
 import aiofiles
 import discord
 import msgspec
-from discord.ext import commands
-from discord.utils import utcnow
-
 from base.cog import BaseCog
 from core.emojis import Emojis
+from discord.ext import commands
+from discord.utils import utcnow, MISSING
 
 
 class VoiceEvent(BaseCog):
     def __init__(self, bot: discord.AutoShardedBot) -> None:
         self.bot: discord.AutoShardedBot = bot
-        self.channel: discord.VoiceChannel = None
+        self.channel: discord.VoiceChannel = MISSING  # type: ignore
 
     @commands.Cog.listener()
     async def on_voice_state_update(
@@ -35,8 +34,8 @@ class VoiceEvent(BaseCog):
         dvc_channel: Any | None = self.data.get('dvc-channel', None)
         notify_channel_id: Any | None = self.data.get('dvc-notify-channel', None)
         notify_channel: discord.TextChannel | None = self.bot.get_channel(
-            notify_channel_id
-        )  # type: ignore
+            notify_channel_id  # type: ignore
+        )
 
         if before.channel is None and after.channel is not None:
             embed = discord.Embed(

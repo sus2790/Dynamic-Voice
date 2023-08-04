@@ -1,11 +1,10 @@
 from typing import Any
 
 import discord
+from base.cog import BaseCog
 from discord.ext import commands
 from discord.utils import utcnow
 from pycord.multicog import add_to_group
-
-from base.cog import BaseCog
 
 
 class Help(BaseCog):
@@ -31,7 +30,7 @@ class Help(BaseCog):
             if not isinstance(command, discord.SlashCommandGroup):
                 embed.add_field(
                     name=f'</{command.qualified_name}:{command.qualified_id}>',
-                    value=f'- {command.description}' or '這個指令還沒有介紹，你要幫我想一個嗎',
+                    value=f'- {command.description}' or '這個指令還沒有介紹',  # type: ignore
                     inline=True,
                 )
 
