@@ -4,9 +4,8 @@ from typing import Any
 import aiofiles
 import discord
 import msgspec
-from discord.utils import utcnow
-
 from core.emojis import Emojis
+from discord.utils import utcnow
 
 
 class NotifyView(discord.ui.View):
@@ -15,7 +14,7 @@ class NotifyView(discord.ui.View):
 
     async def on_timeout(self) -> None:
         for children in self.children:
-            children.disabled = True
+            children.disabled = True  # type: ignore
         await self.message.edit(view=self)
 
     @discord.ui.channel_select(
@@ -53,11 +52,11 @@ class NotifyView(discord.ui.View):
             content: str = await f.read()
             self.feature: Any | dict[Any, Any] = msgspec.json.decode(content) if content else {}
             self.feature['dvc-notify-channel'] = int(
-                ', '.join(f'{channel.id}' for channel in select.values)
+                ', '.join(f'{channel.id}' for channel in select.values)  # type: ignore
             )
 
             async with aiofiles.open(guild_path, 'w') as f:
-                await f.write(msgspec.json.encode(self.feature))
+                await f.write(msgspec.json.encode(self.feature))  # type: ignore
 
         embed = discord.Embed(
             title=f'{Emojis.SUCCESSFUL} 設定成功！',
@@ -79,7 +78,7 @@ class VoiceView(discord.ui.View):
 
     async def on_timeout(self) -> None:
         for children in self.children:
-            children.disabled = True
+            children.disabled = True  # type: ignore
         await self.message.edit(view=self)
 
     @discord.ui.channel_select(
@@ -111,11 +110,11 @@ class VoiceView(discord.ui.View):
             content: str = await f.read()
             self.feature: Any | dict[Any, Any] = msgspec.json.decode(content) if content else {}
             self.feature['dvc-channel'] = int(
-                ', '.join(f'{channel.id}' for channel in select.values)
+                ', '.join(f'{channel.id}' for channel in select.values)  # type: ignore
             )
 
         async with aiofiles.open(guild_path, 'w') as f:
-            await f.write(msgspec.json.encode(self.feature))
+            await f.write(msgspec.json.encode(self.feature))  # type: ignore
 
         embed = discord.Embed(
             title=f'{Emojis.SUCCESSFUL} 設定成功！',
@@ -197,5 +196,5 @@ class DropdownView(discord.ui.View):
 
     async def on_timeout(self) -> None:
         for children in self.children:
-            children.disabled = True
+            children.disabled = True  # type: ignore
         await self.message.edit(view=self)
