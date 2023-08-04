@@ -30,8 +30,8 @@ class DynamicVoice(discord.AutoShardedBot):
             if v is True:
                 self.logger.debug(f'[Cog] {k} 載入成功')
             else:
-                message: str = ''.join(format_exception(type(v), v, v.__traceback__))  # type: ignore
-                self.logger.error(f'[Cog] {k} 發生錯誤\n{message}')
+                v_msg: str = ''.join(format_exception(type(v), v, v.__traceback__))  # type: ignore
+                self.logger.error(f'[Cog] {k} 發生錯誤\n{v_msg}')
 
         apply_multicog(self._bot)  # type: ignore
 
