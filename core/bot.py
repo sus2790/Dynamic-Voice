@@ -9,7 +9,7 @@ from pycord.multicog import apply_multicog
 
 load_dotenv()
 
-
+ 
 class DynamicVoice(discord.AutoShardedBot):
     def __init__(self) -> None:
         coloredlogs.install(logging.DEBUG)
