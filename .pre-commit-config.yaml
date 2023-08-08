@@ -29,7 +29,7 @@ repos:
       - id: check-merge-conflict
         name: Merge Conflicts
   - repo: https://github.com/odwyersoftware/brunette
-    rev: 0.2.7
+    rev: 0.2.8
     hooks:
       - id: brunette
         args: [--safe, --quiet, --single-quotes, --line-length=100]
