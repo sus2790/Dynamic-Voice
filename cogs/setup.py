@@ -3,7 +3,7 @@ from discord.utils import utcnow
 
 from base.cog import BaseCog
 from core.emojis import Emojis
-from views import DropdownView
+from views.selects import DropdownView
 
 class VoiceSetup(BaseCog):
     def __init__(self, bot: discord.AutoShardedBot) -> None:
