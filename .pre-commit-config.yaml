@@ -28,18 +28,13 @@ repos:
         name: TOML Structure
       - id: check-merge-conflict
         name: Merge Conflicts
-  - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: v23.7.0
+  - repo: https://github.com/odwyersoftware/brunette
+    rev: 0.2.8
     hooks:
-      - id: black
-        args: [--safe, --quiet, --line-length=100]
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.5.0
-    hooks:
-      - id: mypy
-        args: [--strict, --ignore-missing-imports]
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.282
+      - id: brunette
+        args: [--safe, --quiet, --single-quotes, --line-length=100]
+  - repo: https://github.com/astral-sh/ruff-pre-commit # replace `isort` and `flake8`
+    rev: v0.0.284
     hooks:
       - id: ruff
         args: [--fix, --line-length=100, --exit-non-zero-on-fix]
