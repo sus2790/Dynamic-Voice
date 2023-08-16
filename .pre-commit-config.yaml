@@ -34,7 +34,7 @@ repos:
       - id: brunette
         args: [--safe, --quiet, --single-quotes, --line-length=100]
   - repo: https://github.com/astral-sh/ruff-pre-commit # replace `isort` and `flake8`
-    rev: v0.0.282
+    rev: v0.0.284
     hooks:
       - id: ruff
         args: [--fix, --line-length=100, --exit-non-zero-on-fix]
