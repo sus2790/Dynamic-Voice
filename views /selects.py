@@ -5,16 +5,12 @@ import aiofiles
 import discord
 import msgspec
 from core.emojis import Emojis
-from discord.enums import ChannelType
-from discord.utils import MISSING, utcnow
+from discord.utils import utcnow
 
 
-class BaseView(discord.ui.View):
-    def __init__(
-        self, timeout: float = 60.0 * 5, channel_types: list[ChannelType] = MISSING
-    ) -> None:
+class NotifyView(discord.ui.View):
+    def __init__(self, timeout: float = 60.0 * 5) -> None:
         super().__init__(timeout=timeout)
-        self.channel_types: list[ChannelType] = channel_types
 
     async def on_timeout(self) -> None:
         for children in self.children:
@@ -23,7 +19,71 @@ class BaseView(discord.ui.View):
 
     @discord.ui.channel_select(
         placeholder='戳我選取頻道',
-        channel_types=None,  # type: ignore
+        channel_types=[
+            discord.ChannelType.text,
+            discord.ChannelType.news,
+            discord.ChannelType.news_thread,
+            discord.ChannelType.public_thread,
+            discord.ChannelType.private_thread,
+        ],
+    )
+    async def channel_select_dropdown(
+        self, select: discord.ui.Select, interaction: discord.Interaction
+    ) -> None:
+        embed = discord.Embed(
+            title=f'{Emojis.LOADING} 正在處理中...',
+            description='聽說沒有人會注意這裡 🤔',
+            color=discord.Color.yellow(),
+            timestamp=utcnow(),
+        )
+        embed.set_author(
+            name=interaction.client.user.name,
+            icon_url=interaction.client.user.avatar,
+        )
+        embed.set_footer(icon_url=interaction.user.avatar, text=interaction.user)
+        await interaction.response.edit_message(content=None, embed=embed, view=None)
+
+        guild_path = Path(f'data/{interaction.guild_id}.json')
+
+        if not guild_path.exists():
+            guild_path.touch()
+
+        async with aiofiles.open(guild_path, 'r') as f:
+            content: str = await f.read()
+            self.feature: Any | dict[Any, Any] = msgspec.json.decode(content) if content else {}
+            self.feature['dvc-notify-channel'] = int(
+                ', '.join(f'{channel.id}' for channel in select.values)  # type: ignore
+            )
+
+            async with aiofiles.open(guild_path, 'w') as f:
+                await f.write(msgspec.json.encode(self.feature))  # type: ignore
+
+        embed = discord.Embed(
+            title=f'{Emojis.SUCCESSFUL} 設定成功！',
+            description=f"已將動態語音通知頻道設置為：{self.feature['dvc-notify-channel']}",
+            color=discord.Color.green(),
+            timestamp=utcnow(),
+        )
+        embed.set_author(
+            name=interaction.client.user.name,
+            icon_url=interaction.client.user.avatar,
+        )
+        embed.set_footer(icon_url=interaction.user.avatar, text=interaction.user)
+        await interaction.edit_original_response(content=None, embed=embed, view=None)
+
+
+class VoiceView(discord.ui.View):
+    def __init__(self, timeout: float = 60.0 * 5) -> None:
+        super().__init__(timeout=timeout)
+
+    async def on_timeout(self) -> None:
+        for children in self.children:
+            children.disabled = True  # type: ignore
+        await self.message.edit(view=self)
+
+    @discord.ui.channel_select(
+        placeholder='戳我選取語音頻道',
+        channel_types=[discord.ChannelType.voice],
     )
     async def channel_select_dropdown(
         self, select: discord.ui.Select, interaction: discord.Interaction
@@ -57,8 +117,8 @@ class BaseView(discord.ui.View):
             await f.write(msgspec.json.encode(self.feature))  # type: ignore
 
         embed = discord.Embed(
-            title=f'{Emojis.SUCCESSFUL} 設定成功!',
-            description=f"已將動態語音通知頻道設置為:{self.feature['dvc-notify-channel']}",
+            title=f'{Emojis.SUCCESSFUL} 設定成功！',
+            description=f"已將動態語音通知頻道設置為：{self.feature['dvc-notify-channel']}",
             color=discord.Color.green(),
             timestamp=utcnow(),
         )
@@ -68,20 +128,6 @@ class BaseView(discord.ui.View):
         )
         embed.set_footer(icon_url=interaction.user.avatar, text=interaction.user)
         await interaction.edit_original_response(content=None, embed=embed, view=None)
-
-
-class VoiceChannel(BaseView):
-    def __init__(self, timeout: float = 60.0 * 5) -> None:
-        channel_types: list[ChannelType] = [ChannelType.voice]
-        super().__init__(timeout=timeout, channel_types=channel_types)
-
-
-class NotifyView(BaseView):
-    def __init__(self, timeout: float = 60.0 * 5) -> None:
-        channel_types: list[ChannelType] = [
-            discord.abc.MessageableChannel
-        ]
-        super().__init__(timeout=timeout, channel_types=channel_types)
 
 
 class Dropdown(discord.ui.Select):
@@ -110,7 +156,7 @@ class Dropdown(discord.ui.Select):
         if self.values[0] == 'dvc-notify-channel':
             embed = discord.Embed(
                 title=f'{Emojis.MENU} 通知頻道選擇',
-                description=f'{interaction.user.mention} 請選取下列選單來設定動態語音通知頻道:',
+                description=f'{interaction.user.mention} 請選取下列選單來設定動態語音通知頻道：',
                 color=discord.Color.blue(),
                 timestamp=utcnow(),
             )
@@ -127,7 +173,7 @@ class Dropdown(discord.ui.Select):
         elif self.values[0] == 'dvc-voice-channel':
             embed = discord.Embed(
                 title=f'{Emojis.MENU} 語音頻道選擇',
-                description=f'{interaction.user.mention} 請選取下列選單來設定動態語音頻道:',
+                description=f'{interaction.user.mention} 請選取下列選單來設定動態語音頻道：',
                 color=discord.Color.blue(),
                 timestamp=utcnow(),
             )
@@ -138,7 +184,7 @@ class Dropdown(discord.ui.Select):
             embed.set_footer(icon_url=interaction.user.avatar, text=interaction.user)
             await interaction.response.send_message(
                 embed=embed,
-                view=VoiceChannel(),
+                view=VoiceView(),
                 ephemeral=True,
             )
 
