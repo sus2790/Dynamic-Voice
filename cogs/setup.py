@@ -5,6 +5,7 @@ from base.cog import BaseCog
 from core.emojis import Emojis
 from views.selects import DropdownView
 
+
 class VoiceSetup(BaseCog):
     def __init__(self, bot: discord.AutoShardedBot) -> None:
         self.bot: discord.AutoShardedBot = bot
